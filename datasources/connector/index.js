@@ -8,11 +8,11 @@ const pool = new Pool({
   ssl: true
 })
 
-const gatewayAccounts = async function gatewayAccounts(gatewayAccountIds) {
+const gatewayAccounts = async function gatewayAccounts(gatewayAccountIds, applePayEnabled) {
   if (gatewayAccountIds.length == 0) {
     return []
   }
-  return gatewayAccountIds.map(async (id) => {
+  const gatewayAccounts = await Promise.all(gatewayAccountIds.map(async (id) => {
     if (id.includes('DIRECT_DEBIT')) {
       return {
         service_name: null,
@@ -27,7 +27,8 @@ const gatewayAccounts = async function gatewayAccounts(gatewayAccountIds) {
         apple_pay_enabled: res.rows[0].allow_apple_pay
       }
     }
-  })
+  }))
+  return gatewayAccounts.filter(gatewayAccount => gatewayAccount.apple_pay_enabled === applePayEnabled)
 }
 
 module.exports = {

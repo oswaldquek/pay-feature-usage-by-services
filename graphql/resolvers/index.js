@@ -2,7 +2,7 @@ const adminUsers = require('../../datasources/adminusers')
 const connector = require('../../datasources/connector')
 
 module.exports = {
-    services: async () => {
+    services: async ({apple_pay_enabled}) => {
         try {
             const s = await adminUsers.services()
             return s.map(async (service) => {
@@ -12,7 +12,7 @@ module.exports = {
                     merchant_name: service.merchant_details? service.merchant_details.name : null,
                     merchant_email: service.merchant_details? service.merchant_details.email : null,
                     users: await adminUsers.usersByServiceExternalId(service.external_id),
-                    gateway_accounts: await connector.gatewayAccounts(service.gateway_account_ids)
+                    gateway_accounts: await connector.gatewayAccounts(service.gateway_account_ids, apple_pay_enabled)
                 }
             })
         } catch (err) {

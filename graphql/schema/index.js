@@ -21,6 +21,6 @@ type GatewayAccount {
 }
 
 type Query {
-   services: [Service!]
+   services(apple_pay_enabled: Boolean): [Service!]
 }
 `);
