@@ -28,7 +28,12 @@ const gatewayAccounts = async function gatewayAccounts(gatewayAccountIds, appleP
       }
     }
   }))
-  return gatewayAccounts.filter(gatewayAccount => gatewayAccount.apple_pay_enabled === applePayEnabled)
+  return gatewayAccounts.filter(gatewayAccount => {
+    if (applePayEnabled === undefined) {
+      return true
+    }
+    return gatewayAccount.apple_pay_enabled === applePayEnabled
+  })
 }
 
 module.exports = {
