@@ -17,6 +17,7 @@ type User {
 type GatewayAccount {
    payment_provider: String!
    service_name: String
+   apple_pay_enabled: Boolean!
 }
 
 type Query {
