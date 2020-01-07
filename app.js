@@ -8,15 +8,15 @@ const graphQlResolvers = require('./graphql/resolvers/index');
 
 const app = express();
 
-const testDbConnection = async function() {
-  try {
-    const res = await db.query('select now() as now')
-    console.log(JSON.stringify(res.rows))
-  } catch (err) {
-    console.log(err)
-    throw err
-  }
-} 
+// const testDbConnection = async function() {
+//   try {
+//     const res = await db.query('select now() as now')
+//     console.log(JSON.stringify(res.rows))
+//   } catch (err) {
+//     console.log(err)
+//     throw err
+//   }
+// } 
 
 app.use(bodyParser.json());
 
@@ -28,7 +28,5 @@ app.use(
     graphiql: true
   })
 );
-
-testDbConnection()
 
 app.listen(3000);
