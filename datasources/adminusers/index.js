@@ -11,9 +11,7 @@ const client = axios.create({
       })
   });
 
-const services = () => client
-    .get('list')
-    .then((response) => response.data)
+const services = () => client.get('list').then((response) => response.data)
 
 const usersByServiceExternalId = async function usersByServiceExternalId(serviceExternalId) {
     const users = await client.get(`${serviceExternalId}/users`).then((response) => response.data)
