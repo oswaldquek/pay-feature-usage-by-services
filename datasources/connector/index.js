@@ -9,31 +9,38 @@ const pool = new Pool({
 })
 
 const gatewayAccounts = async function gatewayAccounts(gatewayAccountIds, applePayEnabled) {
-  if (gatewayAccountIds.length == 0) {
-    return []
-  }
   const gatewayAccounts = await Promise.all(gatewayAccountIds.map(async (id) => {
     if (id.includes('DIRECT_DEBIT')) {
+      if (applePayEnabled === true) {
+        return null
+      }
       return {
         service_name: null,
         payment_provider: 'gocardless',
         apple_pay_enabled: false
       }
     } else {
-      var res = await pool.query('select payment_provider, service_name, allow_apple_pay from gateway_accounts where id = $1', [id])
+      let query = 'select payment_provider, service_name, allow_apple_pay from gateway_accounts where id = $1'
+      let values = [id]
+      if (applePayEnabled !== undefined) {
+        query = query + ' and allow_apple_pay = $2'
+        values.push(applePayEnabled)
+      }
+
+      var res = await pool.query(query, values)
+
+      if (res.rows[0] === undefined) {
+        return null
+      }
       return {
         service_name: res.rows[0].service_name,
         payment_provider: res.rows[0].payment_provider,
         apple_pay_enabled: res.rows[0].allow_apple_pay
       }
+
     }
   }))
-  return gatewayAccounts.filter(gatewayAccount => {
-    if (applePayEnabled === undefined) {
-      return true
-    }
-    return gatewayAccount.apple_pay_enabled === applePayEnabled
-  })
+  return gatewayAccounts.filter(x => x !== null)
 }
 
 module.exports = {

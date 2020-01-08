@@ -7,7 +7,7 @@ type Service {
    merchant_name: String
    merchant_email: String
    users: [User]
-   gateway_accounts: [GatewayAccount]
+   gateway_accounts(apple_pay_enabled: Boolean): [GatewayAccount]
 }
 
 type User {
@@ -21,6 +21,6 @@ type GatewayAccount {
 }
 
 type Query {
-   services(apple_pay_enabled: Boolean): [Service!]
+   services: [Service!]
 }
 `);
