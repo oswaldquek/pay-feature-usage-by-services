@@ -24,7 +24,12 @@ const usersByServiceExternalId = async function usersByServiceExternalId(service
     })
 }
 
+const serviceByGatewayAccountId = (gatewayAccountId) => client
+    .get(`?gatewayAccountId=${gatewayAccountId}`)
+    .then((response) => response.data)
+
 module.exports = {
     services,
-    usersByServiceExternalId
+    usersByServiceExternalId,
+    serviceByGatewayAccountId
 }

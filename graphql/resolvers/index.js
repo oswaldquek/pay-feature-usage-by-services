@@ -14,8 +14,19 @@ class Service {
         return adminUsers.usersByServiceExternalId(this.external_id)
     }
 
-    gateway_accounts({apple_pay_enabled, payment_provider}) {
-        return connector.gatewayAccounts(this.gateway_account_ids, apple_pay_enabled, payment_provider)
+    async gateway_accounts({apple_pay_enabled, payment_provider}) {
+        const gatewayAccounts = await Promise.all(this.gateway_account_ids.map(async (id) => {
+            return await connector.gatewayAccounts(id, apple_pay_enabled, payment_provider)
+        }))
+        return gatewayAccounts.filter(x => x !== null).map(ga => new GatewayAccount(ga))
+    }
+}
+
+class GatewayAccount {
+    constructor(data) {
+        this.service_name = data.service_name
+        this.payment_provider = data.payment_provider
+        this.apple_pay_enabled = data.apple_pay_enabled
     }
 }
 
