@@ -27,6 +27,18 @@ class GatewayAccount {
         this.service_name = data.service_name
         this.payment_provider = data.payment_provider
         this.apple_pay_enabled = data.apple_pay_enabled
+        this.gateway_account_id = data.gateway_account_id
+    }
+
+    async service() {
+        const service = await adminUsers.serviceByGatewayAccountId(this.gateway_account_id)
+        return new Service({
+            external_id: service.external_id,
+            service_name: service.service_name? service.service_name.en : null,
+            merchant_name: service.merchant_details? service.merchant_details.name : null,
+            merchant_email: service.merchant_details? service.merchant_details.email : null,
+            gateway_account_ids: service.gateway_account_ids
+        })
     }
 }
 
@@ -35,7 +47,7 @@ module.exports = {
         try {
             const s = await adminUsers.services()
             return s.map(async (service) => {
-                return new Service ({
+                return new Service({
                     external_id: service.external_id,
                     service_name: service.service_name? service.service_name.en : null,
                     merchant_name: service.merchant_details? service.merchant_details.name : null,
@@ -56,7 +68,8 @@ module.exports = {
             return gatewayAccounts.map(ga => new GatewayAccount({
                 service_name: ga.service_name,
                 payment_provider: ga.payment_provider,
-                apple_pay_enabled: ga.allow_apple_pay
+                apple_pay_enabled: ga.allow_apple_pay,
+                gateway_account_id: ga.id
             }))
         } catch (err) {
             throw err

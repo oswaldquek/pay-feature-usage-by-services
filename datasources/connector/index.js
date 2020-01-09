@@ -21,7 +21,7 @@ const getGatewayAccount = async function getGatewayAccount(gatewayAccountId, app
       apple_pay_enabled: false
     }
   } else {
-    const query = SQL`select payment_provider, service_name, allow_apple_pay from gateway_accounts where id = ${gatewayAccountId}`
+    const query = SQL`select id, payment_provider, service_name, allow_apple_pay from gateway_accounts where id = ${gatewayAccountId}`
     if (applePayEnabled !== undefined) {
       query.append(SQL` and allow_apple_pay = ${applePayEnabled}`)
     }
@@ -37,13 +37,14 @@ const getGatewayAccount = async function getGatewayAccount(gatewayAccountId, app
     return {
       service_name: res.rows[0].service_name,
       payment_provider: res.rows[0].payment_provider,
-      apple_pay_enabled: res.rows[0].allow_apple_pay
+      apple_pay_enabled: res.rows[0].allow_apple_pay,
+      gateway_account_id: res.rows[0].id
     }
   }
 }
 
 const getGatewayAccounts = async function getGatewayAccounts(applePayEnabled, paymentProvider) {
-  const query = SQL`select payment_provider, service_name, allow_apple_pay from gateway_accounts where `
+  const query = SQL`select id, payment_provider, service_name, allow_apple_pay from gateway_accounts where `
   let queryParams = []
   if (applePayEnabled !== undefined) {
     queryParams.push(SQL`allow_apple_pay = ${applePayEnabled}`)
