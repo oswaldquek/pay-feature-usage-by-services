@@ -39,10 +39,31 @@ const getGatewayAccount = async function getGatewayAccount(gatewayAccountId, app
       payment_provider: res.rows[0].payment_provider,
       apple_pay_enabled: res.rows[0].allow_apple_pay
     }
-
   }
 }
 
+const getGatewayAccounts = async function getGatewayAccounts(applePayEnabled, paymentProvider) {
+  const query = SQL`select payment_provider, service_name, allow_apple_pay from gateway_accounts where `
+  let queryParams = []
+  if (applePayEnabled !== undefined) {
+    queryParams.push(SQL`allow_apple_pay = ${applePayEnabled}`)
+  }
+  if (paymentProvider !== undefined) {
+    queryParams.push(SQL`payment_provider = ${paymentProvider}`)
+  }
+  query.append(queryParams[0])
+  queryParams.shift()
+  queryParams.forEach(q => query.append(SQL` and `).append(q))
+  
+  var res = await pool.query(query)
+
+  if (res.rows.length == 0) {
+    return []
+  }
+  return res.rows
+}
+
 module.exports = {
-  getGatewayAccount
+  getGatewayAccount,
+  getGatewayAccounts
 }

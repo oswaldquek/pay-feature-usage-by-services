@@ -48,11 +48,16 @@ module.exports = {
         }
     },
     gateway_accounts: async ({apple_pay_enabled, payment_provider}) => {
-        if (apple_pay_enabled === undefined || payment_provider === undefined) {
-            throw new Error('You have at least one filter')
+        if (apple_pay_enabled === undefined && payment_provider === undefined) {
+            throw new Error('You must have at least one filter')
         }
         try {
-            return null
+            const gatewayAccounts = await connector.getGatewayAccounts(apple_pay_enabled, payment_provider)
+            return gatewayAccounts.map(ga => new GatewayAccount({
+                service_name: ga.service_name,
+                payment_provider: ga.payment_provider,
+                apple_pay_enabled: ga.allow_apple_pay
+            }))
         } catch (err) {
             throw err
         }
