@@ -15,7 +15,8 @@
     "express": "^4.16.4",
     "express-graphql": "^0.7.1",
     "graphql": "^14.0.2",
-    "pg": "7.17.0"
+    "pg": "7.17.0",
+    "sql-template-strings": "2.2.2"
   },
   "devDependencies": {
     "nodemon": "^1.18.7"

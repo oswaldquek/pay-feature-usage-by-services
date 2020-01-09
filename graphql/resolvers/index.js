@@ -14,8 +14,8 @@ class Service {
         return adminUsers.usersByServiceExternalId(this.external_id)
     }
 
-    gateway_accounts({apple_pay_enabled}) {
-        return connector.gatewayAccounts(this.gateway_account_ids, apple_pay_enabled)
+    gateway_accounts({apple_pay_enabled, payment_provider}) {
+        return connector.gatewayAccounts(this.gateway_account_ids, apple_pay_enabled, payment_provider)
     }
 }
 

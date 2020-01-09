@@ -7,7 +7,16 @@ type Service {
    merchant_name: String
    merchant_email: String
    users: [User]
-   gateway_accounts(apple_pay_enabled: Boolean): [GatewayAccount]
+   gateway_accounts(apple_pay_enabled: Boolean, payment_provider: PaymentProvider): [GatewayAccount]
+}
+
+enum PaymentProvider {
+   gocardless
+   worldpay
+   epdq
+   smartpay
+   stripe
+   sandbox
 }
 
 type User {

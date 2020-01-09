@@ -8,10 +8,12 @@ const pool = new Pool({
   ssl: true
 })
 
-const gatewayAccounts = async function gatewayAccounts(gatewayAccountIds, applePayEnabled) {
+const SQL = require('sql-template-strings')
+
+const gatewayAccounts = async function gatewayAccounts(gatewayAccountIds, applePayEnabled, paymentProvider) {
   const gatewayAccounts = await Promise.all(gatewayAccountIds.map(async (id) => {
     if (id.includes('DIRECT_DEBIT')) {
-      if (applePayEnabled === true) {
+      if (applePayEnabled === true || paymentProvider !== 'gocardless') {
         return null
       }
       return {
@@ -20,14 +22,15 @@ const gatewayAccounts = async function gatewayAccounts(gatewayAccountIds, appleP
         apple_pay_enabled: false
       }
     } else {
-      let query = 'select payment_provider, service_name, allow_apple_pay from gateway_accounts where id = $1'
-      let values = [id]
+      const query = SQL`select payment_provider, service_name, allow_apple_pay from gateway_accounts where id = ${id}`
       if (applePayEnabled !== undefined) {
-        query = query + ' and allow_apple_pay = $2'
-        values.push(applePayEnabled)
+        query.append(SQL` and allow_apple_pay = ${applePayEnabled}`)
+      }
+      if (paymentProvider !== undefined) {
+        query.append(SQL` and payment_provider = ${paymentProvider}`)
       }
 
-      var res = await pool.query(query, values)
+      var res = await pool.query(query)
 
       if (res.rows[0] === undefined) {
         return null
