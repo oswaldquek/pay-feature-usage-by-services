@@ -10,7 +10,7 @@ const pool = new Pool({
 
 const SQL = require('sql-template-strings')
 
-const gatewayAccounts = async function gatewayAccounts(gatewayAccountId, applePayEnabled, paymentProvider) {
+const getGatewayAccount = async function getGatewayAccount(gatewayAccountId, applePayEnabled, paymentProvider) {
   if (gatewayAccountId.includes('DIRECT_DEBIT')) {
     if (applePayEnabled === true || paymentProvider !== 'gocardless') {
       return null
@@ -44,6 +44,5 @@ const gatewayAccounts = async function gatewayAccounts(gatewayAccountId, applePa
 }
 
 module.exports = {
-  query: (text, params) => pool.query(text, params),
-  gatewayAccounts
+  getGatewayAccount
 }

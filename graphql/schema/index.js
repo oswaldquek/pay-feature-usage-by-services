@@ -31,5 +31,6 @@ type GatewayAccount {
 
 type Query {
    services: [Service!]
+   gateway_accounts(apple_pay_enabled: Boolean, payment_provider: PaymentProvider): [GatewayAccount]
 }
 `);

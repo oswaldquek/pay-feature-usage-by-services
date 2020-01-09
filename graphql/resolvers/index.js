@@ -16,7 +16,7 @@ class Service {
 
     async gateway_accounts({apple_pay_enabled, payment_provider}) {
         const gatewayAccounts = await Promise.all(this.gateway_account_ids.map(async (id) => {
-            return await connector.gatewayAccounts(id, apple_pay_enabled, payment_provider)
+            return await connector.getGatewayAccount(id, apple_pay_enabled, payment_provider)
         }))
         return gatewayAccounts.filter(x => x !== null).map(ga => new GatewayAccount(ga))
     }
@@ -44,7 +44,17 @@ module.exports = {
                 })
             })
         } catch (err) {
-            throw err;
+            throw err
+        }
+    },
+    gateway_accounts: async ({apple_pay_enabled, payment_provider}) => {
+        if (apple_pay_enabled === undefined || payment_provider === undefined) {
+            throw new Error('You have at least one filter')
+        }
+        try {
+            return null
+        } catch (err) {
+            throw err
         }
     }
 }
